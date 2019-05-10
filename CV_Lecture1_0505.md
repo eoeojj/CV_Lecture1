@@ -108,7 +108,7 @@ $ git <verb> --help
 
 $ man git -<verb>
 
-<verb>는 자신이 궁금한 것을 쓰는 곳이다. 예를들어 config의 도움말을 보고싳으면 config를 <verb>위치에 쓴다.
+<verb>는 자신이 궁금한 것을 쓰는 곳이다. 예를들어 config의 도움말을 보고 싶으면 config를 <verb>위치에 쓴다.
 
 # 2 Git의 기초
 
