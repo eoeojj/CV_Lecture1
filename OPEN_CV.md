@@ -28,7 +28,7 @@
 
 #### 1.2.1 영상의 획득과 표현방법
 
-영상은 피사체 $\rightarrow$렌즈$\rightarrow$ 이미지 센서$\rightarrow​$ ISP 를 거쳐 영상 파일 형식으로 저장된다. 이 2차원 영상을 구성하는 최소단위는 픽셀(pixel=화소)이다. 픽셀은 격자형태로 배열되어 나타난다. 픽셀 좌표는 가로  x축 세로 y축으로 영상을 f라고표기 후 영상의 좌표픽셀값은 f(x,y)로 표현한다. 
+영상은 피사체 $\rightarrow$렌즈$\rightarrow$ 이미지 센서$\rightarrow$ ISP 를 거쳐 영상 파일 형식으로 저장된다. 이 2차원 영상을 구성하는 최소단위는 픽셀(pixel=화소)이다. 픽셀은 격자형태로 배열되어 나타난다. 픽셀 좌표는 가로  x축 세로 y축으로 영상을 f라고표기 후 영상의 좌표픽셀값은 f(x,y)로 표현한다. 
 
 영상의 좌표픽셀값은 2차원 행렬로 나타낼 수 있다.
 
@@ -68,24 +68,110 @@ OpenCV는 다수의 모듈로 구성되어있다. 여기서 모듈은 각 함수
 
 프로젝트 생성, 화면출력하기
 
-#### 2.2.1 OpenCV 프로젝트 만들기
+visual studio 2017을 이용하여 OpenCV 응용 프로그램을 만든다. window 데스크톱 마법사로 응용프로그램 프로젝트를 생성. 
 
-visual studio 2017을 이용하여 OpenCV 응용 프로그램을 만든다. window 데스크톱 마법사로 응용프로그램 프로젝트를 생성.
-
-첫번째로 Hello OpenCV 를 출력해 본다.
+#### OpenCV 주요 함수
 
 ```
-#include "opencv2/opencv.hpp" 
-#include <iostream>
-
-int main()
-{
-    std::cout<<"Hello OpenCV" <<CV_VERSION <<std::endl;
-    return 0;
-}
+Mat imread(const String& filename , int flags = IMREAD_COLOR);
 ```
 
-이 코드가 실행되기 위해서는 폴더정보를 인식하기 위해 경로지정을 해주어야한다.
+filename : 불러올 영상 파일 이름
+
+flags : 영상 파일 불러오기 옵션플래그 , ImreadModes 열거형 상수 지정
+
+반환값 : 불러온 영상데이처 (Mat 개체)
+
+=> filename 영상파일을 불러와서 Mat객체로 변환하여 반환한다. : 쉽게 영상을 호출하는 함수라고 생각하면 된다. 열거형 상수를 사용하여 다양한 기능을 쓸 수 있다.
+
+```
+bool imwrite(const String& filename, InputArray img, const std::vector<int>& params = std::vector<int>( ));
+```
+
+filename : 불러올 영상 파일 이름
+
+img : 저장할 영상 데이터(Mat 객체)
+
+params : 저장할 영상 파일 형식에 의존적인 파라미터(플래그&값) 쌍, 영상의 별도 옵션을 지정할 수 있다. JPEG압축률을 나타내는 코드인 IMWRITE_JEPG_QUALITY를 활용하여 압축률 조정이 가능하다. 파일 형식 변경. 옵션설정
+
+반환값 : 정상적으로 저장하면 true, 실패하면 false를 반환한다. 
+
+=>img 변수에 저장되어 있는 영상 데이터를 filename 이름의 파일로 저장한다. : 영상데이터를 파일로 저장하기 위해서 사용하는 함수이다. 
+
+```
+bool Mat::empty( ) const
+```
+
+반환값 : 행렬의 rows 또는 cols 멤버 변수가 0이거나, 또는 data 멤버변수가 NULL이면 true 를 반환한다.
+
+=>Mat::empty()을 이용하여 객체가 잘 생성되었는지 확인한다. 
+
+```
+void nameWindow(const String& winname, int flags = WINDOW_AUTOSIZE);
+```
+
+winname : 영상출력 창 이름 이 '고유한 문자열'로 창을 구분한다
+
+flags : 창의 속성 지정 플래그, WindowFlags 열거형 상수 지정. 인자를 지정하지 않으면 WINDOW_AUTOSIZE로 자동으로 영상크기에 맞춰서 창이 생성된다. 창의 사이즈를 resizeWindow()함수를 이용하여 변경하거나 마우스로 변경하고 싶다면 값은WINDOW_NORMAL로 지정해야한다. 
+
+=>영상 출력을 하기 위해 빈 창 생성하는 함수
+
+```
+void destroyWindow(const String& winname);
+void destroyAllWindow();
+```
+
+winname : 소멸시킬 창 이름
+
+=>영상 출력 창을 닫는 함수. 프로그램이 종료 될 때 창은 자동으로 닫히지만 동작 중에 창을 닫고 싶다면 이 함수를 반드시 사용해야 한다.
+
+```
+void moveWindow(const String& winname, int x, int y);
+```
+
+winname : 위치를 이동할 창 이름
+
+x , y: 창이 이동할 x, y좌표 
+
+=>출력창을 정해진 위치로 이동시킨다.
+
+```
+void resizeWindow(const String& winname, int width, int height);
+```
+
+winname : 위치를 이동할 창 이름
+
+width, height : 각각 창의 가로, 세로 크기
+
+=>프로그램 동작 중에 출력 창의 크기를 바꿀 때 쓰이는 함수이다. 창의 전체크기가 아닌 영상이 나오는 부분의 크기를 바꾼다. WINDOW_AUTOSIZE 플래그로 설정되었던 창이라면 이 함수로 크기를 변경할 수 없다.
+
+```
+void imshow(const String& winname, InputArray mat);
+```
+
+winname : 영상 출력할 창 이름
+
+mat : 출력할 영상 데이터(Mat 객체)
+
+-1채널 8비트 ucahr =픽셀값 그레이스케일 밝기형태
+
+-3채널 컬러 = 색상표현 B G R 순서의 배열로 넣어야 한다
+
+-16 . 32비트 정수형=행렬원소값/256 :영상의 밝기값
+
+-16 . 32비트 실수형=행렬원소값*255:영상의 밝기값
+
+=>Mat 클래스 객체에 저장된 영상데이터를 화면에 출력하는 함수이다.  InputArray 타입은 대부분 Mat클래스 타입의 변수를 전달한다고 생각해도 된다. 이 함수가 호출되는 시점에 출력창이 없어도 자동으로  WINDOW_AUTOSIZE속성의 창이 만들어진다.
+
+```
+int waitKey(int delay=0);
+```
+
+delay : 키 입력을 기다리는 시간 ms 단위delay<=이면 무한으로 기다린다.
+
+반환값 : 눌린 키 값 안눌렸으면 -1반환
+
+=>키보드를 입력 받는 용도로 사용된다. imshow()를 호출 한 후 waitKey() 함수 호출해야 영상이 정상적으로 출력된다.
 
 
 
